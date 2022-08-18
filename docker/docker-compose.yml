@@ -5,6 +5,7 @@ services:
     container_name: mysql-tutorial
     image: 'mysql:5.7'
     environment:
+      - MYSQL_DATABASE=sandbox
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=mysql
       - MYSQL_PASSWORD=root
@@ -14,6 +15,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - "./sql/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - ./data:/var/lib/mysql
 
   mysql-exporter:

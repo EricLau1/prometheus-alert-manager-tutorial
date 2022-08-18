@@ -8,12 +8,14 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"prometheus-alert-manager-tutorial/api/db"
+	"prometheus-alert-manager-tutorial/api/exit"
 	"prometheus-alert-manager-tutorial/api/handlers"
 	"prometheus-alert-manager-tutorial/api/httpext"
 	"prometheus-alert-manager-tutorial/api/middlewares"
 	"prometheus-alert-manager-tutorial/api/services"
 	"prometheus-alert-manager-tutorial/api/store"
 	_ "prometheus-alert-manager-tutorial/docs"
+	"prometheus-alert-manager-tutorial/jobs"
 )
 
 var port int
@@ -29,20 +31,26 @@ func init() {
 }
 
 func Run() {
-
 	var (
 		conn         = db.New()
 		todosStore   = store.NewTodosStore(conn)
 		todosService = services.NewTodosService(todosStore)
 		router       = gin.New()
+		job          = jobs.New()
 	)
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(middlewares.Metrics())
+
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	handlers.RegisterIndex(router)
 	handlers.RegisterMetrics(router)
 	handlers.RegisterTodos(router, todosService)
+
+	exit.Graceful(job.Close)
+	go job.Run()
+
 	log.Fatal(router.Run(httpext.Port(port).Addr()))
 }

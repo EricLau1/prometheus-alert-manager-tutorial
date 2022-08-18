@@ -1,11 +1,13 @@
-# Prometheus Alert Manager Tutorial
+# Golang With Prometheus Alert Manager
+
+
+## Config Swagger
 
 - REF:
   - https://santoshk.dev/posts/2022/how-to-integrate-swagger-ui-in-go-backend-gin-edition/
   - https://github.com/swaggo/swag/tree/master/example/celler/controller
-  - https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/
 
-## Dependencies:
+### Dependencies:
 
 ```bash
 go get -u github.com/swaggo/swag/cmd/swag
@@ -31,3 +33,12 @@ Output...
 2022/08/17 21:34:08 create swagger.json at docs/swagger.json
 2022/08/17 21:34:08 create swagger.yaml at docs/swagger.yaml
 ```
+
+## Run Docker
+
+```bash
+cd docker
+
+make up
+```
+

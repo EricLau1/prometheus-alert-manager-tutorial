@@ -11,14 +11,14 @@ var (
 	apiRequestsCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "api_requests_total",
 		Help: "API requests counter",
-	}, []string{"path", "status"})
+	}, []string{"method", "path", "status"})
 
 	apiResponseTimeDuration = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "api_response_time_duration",
 		Help: "API response times",
-		// adding 1ms, 2.5ms + def buckets
+		// adding 1ms, 2ms, 2.5ms + def buckets
 		Buckets: append([]float64{.001, .002, .0025}, prometheus.DefBuckets...),
-	}, []string{"path", "status"})
+	}, []string{"method", "path", "status"})
 )
 
 func init() {
@@ -34,10 +34,11 @@ func Metrics() gin.HandlerFunc {
 
 		var (
 			elapsed  = time.Since(start)
+			method   = ctx.Request.Method
 			fullPath = ctx.FullPath()
 			status   = fmt.Sprint(ctx.Writer.Status())
 		)
-		apiRequestsCounter.WithLabelValues(fullPath, status).Inc()
-		apiResponseTimeDuration.WithLabelValues(fullPath, status).Observe(elapsed.Seconds())
+		apiRequestsCounter.WithLabelValues(method, fullPath, status).Inc()
+		apiResponseTimeDuration.WithLabelValues(method, fullPath, status).Observe(elapsed.Seconds())
 	}
 }

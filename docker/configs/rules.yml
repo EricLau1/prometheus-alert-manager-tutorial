@@ -18,3 +18,13 @@ groups:
       annotations:
         summary: 'Alert with high severity.'
         description: MySQL server is down for about 20 seconds
+- name: ApiAlerts
+  rules:
+    - alert: FailedRequests
+      expr: sum(rate(api_requests_total{status=~"4.*|5.*"}[1m])) > 0
+      for: 10s
+      labels:
+        severity: high
+      annotations:
+        summary: 'Too many failed requests'
+        description: Requests with receiving status > 400
