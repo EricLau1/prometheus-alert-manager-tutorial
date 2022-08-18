@@ -1,18 +1,20 @@
 groups:
 - name: DatabaseAlerts
   rules:
-    - alert: InstanceDown
+    - alert: DatabaseDown
       expr: mysql_up{job="mysql"} < 1
       for: 10s
       labels:
         severity: low
       annotations:
         summary: 'Alert with low severity.'
+        description: MySQL server is down for about 10 seconds
 
-    - alert: InstanceDownCritical
+    - alert: DatabaseDownCritical
       expr: mysql_up{job="mysql"} < 1
-      for: 10s
+      for: 20s
       labels:
         severity: high
       annotations:
         summary: 'Alert with high severity.'
+        description: MySQL server is down for about 20 seconds

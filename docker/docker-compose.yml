@@ -24,7 +24,7 @@ services:
     ports:
       - '9104:9104'
     depends_on:
-        - db
+      - db
 
   prometheus:
     image: prom/prometheus:latest

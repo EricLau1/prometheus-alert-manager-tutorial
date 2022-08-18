@@ -3,6 +3,7 @@
 - REF:
   - https://santoshk.dev/posts/2022/how-to-integrate-swagger-ui-in-go-backend-gin-edition/
   - https://github.com/swaggo/swag/tree/master/example/celler/controller
+  - https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/
 
 ## Dependencies:
 
