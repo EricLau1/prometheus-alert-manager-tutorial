@@ -1,0 +1,76 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: mysql-tutorial
+    image: 'mysql:5.7'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=root
+      - DATABASE_HOST=db
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysql-exporter-tutorial
+    environment:
+      - DATA_SOURCE_NAME=root:root@(db:3306)/
+    ports:
+      - '9104:9104'
+    depends_on:
+        - db
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-tutorial
+    volumes:
+      - ./configs/:/etc/prometheus/
+      - prometheus_data_tutorial:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/console'
+    ports:
+      - '9090:9090'
+
+  prometheus-pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway-tutorial
+    expose:
+      - 9091
+    ports:
+      - '9091:9091'
+    depends_on:
+      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager-tutorial
+    restart: on-failure
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./configs/:/config"
+      - alertmanager_data_tutorial:/data
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-tutorial
+    ports:
+      - '3010:3000'
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data_tutorial:
+  alertmanager_data_tutorial:

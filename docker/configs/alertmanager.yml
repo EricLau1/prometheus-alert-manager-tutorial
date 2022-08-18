@@ -1,0 +1,13 @@
+route:
+  receiver: 'mail'
+  repeat_interval: 4h
+  group_by: [ DemoAlerts ]
+
+receivers:
+  - name: 'mail'
+    email_configs:
+      - smarthost: 'smtp.gmail.com:465'
+        auth_username: 'ericlau.oliveira@gmail.com'
+        auth_password: ""
+        from: 'ericlau.oliveira@gmail.com'
+        to: 'ericlau.oliveira@gmail.com'
